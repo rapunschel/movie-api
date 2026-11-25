@@ -1,0 +1,11 @@
+using System;
+
+namespace MovieApi.Models;
+
+public class MovieDetails
+{
+    public int Id { get; set; }
+    public string Synopsis { get; set; }
+    public string Language { get; set; }
+    public double Budget { get; set; }
+}

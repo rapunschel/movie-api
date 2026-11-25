@@ -1,9 +1,10 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
+using MovieApi.Models;
 namespace MovieApi;
 
-public class MovieContext
+public class MovieDbContext
 {
     public class PubContext : DbContext
     {
@@ -18,7 +19,13 @@ public class MovieContext
             var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
             optionsBuilder
                 .UseSqlServer($"Server={server};Database={database};User Id={user};Password={password};TrustServerCertificate=True;");
-
         }
+
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<MovieDetails> MovieDetails { get; set; }
+        public DbSet<Genre> Genre { get; set; }
+
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Actor> Actors { get; set; }
     }
 }
