@@ -3,8 +3,21 @@ using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using MovieApi;
+using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
+using MovieApi.Models;
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load("/home/nelia/personal/lexicon-fullstack/api_fundamentals/db.env");
+var server = Environment.GetEnvironmentVariable("DB_SERVER");
+var database = Environment.GetEnvironmentVariable("DB_NAME");
+var user = Environment.GetEnvironmentVariable("DB_USER");
+var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+var connectionString = $"Server={server};Database={database};User Id={user};Password={password};TrustServerCertificate=True;";
+
+builder.Services.AddDbContext<MovieDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
