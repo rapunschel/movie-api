@@ -1,15 +1,14 @@
 using System;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MovieApi;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
-using MovieApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load("/home/nelia/personal/lexicon-fullstack/api_fundamentals/db.env");
+Env.Load(".env");
 var server = Environment.GetEnvironmentVariable("DB_SERVER");
 var database = Environment.GetEnvironmentVariable("DB_NAME");
 var user = Environment.GetEnvironmentVariable("DB_USER");
