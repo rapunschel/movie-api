@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApi;
+using MovieApi.DTOs;
 using MovieApi.Models;
 
 namespace MovieApi.Controllers
@@ -23,23 +24,101 @@ namespace MovieApi.Controllers
 
         // GET: api/Movies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
-            return await _context.Movies.ToListAsync();
+            var movies = await _context.Movies.Select(m => new MovieDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Year = m.Year,
+                Genre = m.Genre,
+                Duration = m.Duration
+            }).ToListAsync();
+
+            return Ok(movies);
         }
 
         // GET: api/Movies/5
+
+        // GET: api/Movies/5
+        // GET: api/Movies/5?withactors=true
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        public async Task<IActionResult> GetMovie(
+            int id,
+            [FromQuery] bool withactors = false)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var query = _context.Movies.Include(m => m.Genre).AsQueryable();
+            if (withactors)
+            {
+                query = query.Include(m => m.Actors);
+            }
+
+            var movie = await query.FirstOrDefaultAsync(m => m.Id == id);
 
             if (movie == null)
             {
                 return NotFound();
             }
 
-            return movie;
+            var movieDto = new MovieDto
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Year = movie.Year,
+                Genre = movie.Genre,
+                Duration = movie.Duration
+            };
+
+            if (withactors)
+            {
+                return Ok(new
+                {
+                    Movie = movieDto,
+                    Actors = movie.Actors.Select(a => new ActorDto
+                    {
+                        Id = a.Id,
+                        Name = a.Name,
+                        BirthYear = a.BirthYear
+                    }).ToList()
+                });
+            }
+
+            return Ok(movieDto);
+        }
+
+        // GET: api/Movies/5/details
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var movie = await _context.Movies
+                                .Include(m => m.Reviews)
+                                .Include(m => m.Actors)
+                                .Include(m => m.Details)
+                                .FirstOrDefaultAsync(m => m.Id == id);
+            if (movie == null) return NotFound();
+
+            var details = new MovieDetailsDto
+            {
+                Id = movie.Details.Id,
+                Synopsis = movie.Details.Synopsis,
+                Language = movie.Details.Language,
+                Budget = movie.Details.Budget,
+                Reviews = movie.Reviews.Select(r => new ReviewDto
+                {
+                    Id = r.Id,
+                    ReviwerName = r.ReviwerName,
+                    Comment = r.Comment,
+                    Rating = r.Rating
+                }).ToList(),
+
+                Actors = movie.Actors.Select(a => new ActorDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    BirthYear = a.BirthYear,
+                }).ToList()
+            };
+            return Ok(details);
         }
 
         // PUT: api/Movies/5

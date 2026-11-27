@@ -18,7 +18,7 @@ public class MovieDetailsDto
     [Required]
     public double Budget { get; set; }
 
-    public List<ReviewDto> Reviews { get; set; }
-    public List<ActorDto> Actors { get; set; }
+    public List<ReviewDto> Reviews { get; set; } = [];
+    public List<ActorDto> Actors { get; set; } = [];
 
 }
