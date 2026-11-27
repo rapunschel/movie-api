@@ -9,6 +9,4 @@ public class Actor
     public string Name { get; set; }
     public int BirthYear { get; set; }
     public ICollection<Movie> Movies { get; set; } = [];
-
-
 }

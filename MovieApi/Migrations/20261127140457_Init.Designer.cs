@@ -11,8 +11,8 @@ using MovieApi;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    [Migration("20261127125936_RenameGenre")]
-    partial class RenameGenre
+    [Migration("20261127140457_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
