@@ -68,7 +68,7 @@ namespace MovieApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("MovieApi.Models.Movie", b =>
